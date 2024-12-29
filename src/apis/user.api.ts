@@ -17,4 +17,8 @@ export const UserApi = {
     const url = `/user/${id}`;
     return axiosClient.delete(url);
   },
+  getMe: () => {
+    const url = '/user/me';
+    return axiosClient.get(url);
+  },
 };

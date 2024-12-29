@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { ProductApi } from '../../apis/product.api';
+import { CategoryApi } from '../../apis/category.api';
 import './dataTable.scss';
 
 type Props = {
@@ -14,31 +14,31 @@ type Props = {
   getRowId?: (row: object) => number;
 };
 
-const DataTable = (props: Props) => {
+const DataTableCategory = (props: Props) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const mutationDelete = useMutation({
-    mutationFn: (id: string) => ProductApi.deleteProduct(id),
+    mutationFn: (id: string) => CategoryApi.deleteCategory(id),
     onSuccess: () => {
-      queryClient.invalidateQueries(['products']);
-      toast.success('Xóa sản phẩm thành công!');
-      setOpen(false); // Đóng modal sau khi xóa
+      queryClient.invalidateQueries(['categorys']);
+      toast.success('Xóa danh mục sản phẩm thành công!');
+      setOpen(false);
     },
     onError: () => {
-      toast.error('Không thể xóa sản phẩm. Vui lòng thử lại.');
+      toast.error('Không thể xóa danh mục sản phẩm. Vui lòng thử lại.');
     },
   });
 
   const handleOpen = (id: string) => {
     setSelectedId(id);
-    setOpen(true); // Mở modal xác nhận
+    setOpen(true);
   };
 
   const handleClose = () => {
-    setOpen(false); // Đóng modal
-    setSelectedId(null); // Xóa trạng thái id đã chọn
+    setOpen(false);
+    setSelectedId(null);
   };
 
   const handleConfirmDelete = () => {
@@ -91,10 +91,9 @@ const DataTable = (props: Props) => {
         disableColumnSelector
       />
 
-      {/* Modal Xác Nhận Xóa */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Xác nhận xóa</DialogTitle>
-        <DialogContent>Bạn có chắc chắn muốn xóa sản phẩm này không?</DialogContent>
+        <DialogContent>Bạn có chắc chắn muốn xóa danh mục này không?</DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='secondary'>
             Hủy
@@ -108,4 +107,4 @@ const DataTable = (props: Props) => {
   );
 };
 
-export default DataTable;
+export default DataTableCategory;

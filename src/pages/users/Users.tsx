@@ -1,73 +1,56 @@
-import { GridColDef } from "@mui/x-data-grid";
-import DataTable from "../../components/dataTable/DataTable";
-import "./Users.scss";
-import { useState } from "react";
-import Add from "../../components/add/Add";
-import { userRows } from "../../data";
+import { GridColDef } from '@mui/x-data-grid';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { UserApi } from '../../apis/user.api';
+import Add from '../../components/add/AddSupplier';
+import DataTable from '../../components/dataTable/DataTable';
+import './Users.scss';
+import DataTableUser from '../../components/dataTableUser/DataTableUser';
 // import { useQuery } from "@tanstack/react-query";
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 90 },
+  { field: 'UserID', headerName: 'ID', width: 300 },
   {
-    field: "img",
-    headerName: "Avatar",
-    width: 100,
-    renderCell: (params) => {
-      return <img src={params.row.img || "ledaianh.png"} alt="AVT" />;
-    },
+    field: 'fullname',
+    type: 'string',
+    headerName: 'Họ và tên ',
+    width: 500,
   },
   {
-    field: "hoten",
-    type: "string",
-    headerName: "Họ và tên ",
-    width: 250,
-  },
-  {
-    field: "diachi",
-    type: "string",
-    headerName: "Địa chỉ ",
-    width: 250,
-  },
-  {
-    field: "email",
-    type: "string",
-    headerName: "Email",
-    width: 200,
-  },
-  {
-    field: "phone",
-    type: "string",
-    headerName: "Số điện thoại ",
-    width: 150,
-  },
-  {
-    field: "ngaytao",
-    headerName: "Ngày tạo ",
-    width: 100,
-    type: "string",
-  },
-  {
-    field: "verified",
-    headerName: "Xác minh ",
-    width: 150,
-    type: "boolean",
+    field: 'email',
+    type: 'string',
+    headerName: 'Email',
+    width: 400,
   },
 ];
 
 const Users = () => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
 
+  const {
+    data: getUser,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => UserApi.getUsers(),
+  });
 
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading users</div>;
 
   return (
-    <div className="users">
-      <div className="info">
+    <div className='users'>
+      <div className='info'>
         <h1>Tài khoản</h1>
-        <button onClick={() => setOpen(true)}> + Thêm tài khoản mới </button>
       </div>
-      <DataTable slug="users" columns={columns} rows={userRows} />
-     
-      {open && <Add slug="user" columns={columns} setOpen={setOpen} />}
+      <DataTableUser
+        slug='users'
+        columns={columns}
+        rows={getUser?.data || []}
+        getRowId={(row: any) => row.UserID}
+      />
+      {open && <Add slug='user' columns={columns} setOpen={setOpen} />}
     </div>
   );
 };

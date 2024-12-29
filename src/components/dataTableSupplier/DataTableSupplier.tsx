@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { ProductApi } from '../../apis/product.api';
+import { SupplierApi } from '../../apis/supplier.api';
 import './dataTable.scss';
 
 type Props = {
@@ -14,20 +14,20 @@ type Props = {
   getRowId?: (row: object) => number;
 };
 
-const DataTable = (props: Props) => {
+const DataTableSupplier = (props: Props) => {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const mutationDelete = useMutation({
-    mutationFn: (id: string) => ProductApi.deleteProduct(id),
+    mutationFn: (id: string) => SupplierApi.deleteSupplier(id),
     onSuccess: () => {
-      queryClient.invalidateQueries(['products']);
-      toast.success('Xóa sản phẩm thành công!');
-      setOpen(false); // Đóng modal sau khi xóa
+      queryClient.invalidateQueries(['suppliers']);
+      toast.success('Xóa nhà cung cấp thành công!');
+      setOpen(false); // Đóng modal sau khi xóa thành công
     },
     onError: () => {
-      toast.error('Không thể xóa sản phẩm. Vui lòng thử lại.');
+      toast.error('Không thể xóa nhà cung cấp. Vui lòng thử lại.');
     },
   });
 
@@ -91,10 +91,9 @@ const DataTable = (props: Props) => {
         disableColumnSelector
       />
 
-      {/* Modal Xác Nhận Xóa */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Xác nhận xóa</DialogTitle>
-        <DialogContent>Bạn có chắc chắn muốn xóa sản phẩm này không?</DialogContent>
+        <DialogContent>Bạn có chắc chắn muốn xóa nhà cung cấp này không?</DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color='secondary'>
             Hủy
@@ -108,4 +107,4 @@ const DataTable = (props: Props) => {
   );
 };
 
-export default DataTable;
+export default DataTableSupplier;
